@@ -1,213 +1,204 @@
-# SOC Home Lab — Wazuh SIEM
+# Laboratoire SOC — Supervision de sécurité avec Wazuh
 
-![Project status](https://img.shields.io/badge/status-in%20progress-orange)
-![Focus](https://img.shields.io/badge/focus-SOC%20%7C%20Blue%20Team-blue)
-![Platform](https://img.shields.io/badge/platform-Linux-lightgrey)
+![Statut du projet](https://img.shields.io/badge/statut-en%20cours-orange)
+![Domaine](https://img.shields.io/badge/domaine-SOC%20%7C%20Blue%20Team-blue)
+![Plateforme](https://img.shields.io/badge/plateforme-Linux-lightgrey)
 
-## Overview
+## 1. Présentation du projet
 
-This project aims to build a small Security Operations Center (SOC) home lab using Wazuh, an open-source security monitoring platform.
+Ce projet consiste à construire un laboratoire personnel de cybersécurité afin de comprendre le fonctionnement d'un centre opérationnel de sécurité (SOC), à l'aide de Wazuh, une plateforme open source de supervision de la sécurité.
 
-The objective is to understand how security events are collected, monitored, analyzed, and investigated in a controlled laboratory environment.
+L'objectif est d'apprendre à collecter des journaux système, surveiller les événements de sécurité, détecter des activités suspectes, analyser des alertes et documenter des incidents dans un environnement contrôlé.
 
-The project focuses on practical SOC analyst skills, including log analysis, authentication monitoring, alert investigation, detection validation, and incident reporting.
+Ce laboratoire permettra de développer des compétences pratiques en cybersécurité défensive, notamment en analyse de journaux, détection d'événements, investigation et réponse à incident.
 
-**Project status:** In progress. Implementation and test results will be documented as the lab evolves.
+**État du projet :** en cours de réalisation. Les configurations, les tests et les résultats seront documentés au fur et à mesure de l'avancement.
 
-## Objectives
+## 2. Objectifs
 
-- Deploy and understand a Wazuh monitoring environment.
-- Connect a monitored Linux endpoint to the platform.
-- Collect and inspect security logs.
-- Investigate repeated authentication failures.
-- Validate detection behavior using controlled test events.
-- Document alerts, false positives, and detection limitations.
-- Produce a structured incident report.
-- Practice technical documentation and reproducible investigations.
+- Installer et comprendre l'architecture de Wazuh.
+- Connecter un poste Linux à la plateforme de supervision.
+- Collecter et analyser des journaux de sécurité.
+- Étudier les échecs d'authentification répétés.
+- Tester et valider des mécanismes de détection.
+- Identifier les faux positifs et les limites des règles.
+- Analyser des alertes et reconstituer une chronologie d'événements.
+- Rédiger un rapport d'incident structuré.
+- Documenter les choix techniques et rendre les manipulations reproductibles.
 
-## Technologies and Languages
+## 3. Technologies et langages
 
-| Technology | Purpose |
+| Technologie ou langage | Utilisation |
 |---|---|
-| Wazuh | Security monitoring, log analysis, and alerting |
-| Linux / Ubuntu | Laboratory environment and endpoint |
-| Bash | Linux administration and command-line operations |
-| YAML | Configuration files where applicable |
-| Markdown | Technical documentation and incident reports |
-| JSON | Structured sample events and test data |
-| Python | Optional log generation and test automation |
-| Git / GitHub | Version control and project documentation |
+| Wazuh | Supervision de la sécurité, analyse des journaux et alertes |
+| Linux / Ubuntu | Système d'exploitation du laboratoire |
+| Bash | Commandes Linux et automatisation de tâches |
+| YAML | Fichiers de configuration lorsque nécessaire |
+| Markdown | Documentation et rapports |
+| JSON | Événements de test structurés |
+| Python | Automatisation et analyse complémentaire, si nécessaire |
+| Git / GitHub | Gestion des versions et publication du projet |
 
-Additional technologies may be introduced when required by the project.
+Les technologies supplémentaires seront ajoutées uniquement lorsqu'elles apporteront une réelle valeur au projet.
 
-## Planned Architecture
+## 4. Architecture prévue
 
-The initial laboratory will use a Wazuh server and a monitored Linux endpoint.
+Le laboratoire reposera initialement sur un serveur Wazuh et un poste Linux surveillé.
 
 ```text
-+--------------------------+
-| Linux Endpoint           |
-|                          |
-| System and auth logs     |
-+------------+-------------+
-             |
-             | Log collection
-             v
-+--------------------------+
-| Wazuh Agent              |
-|                          |
-| Monitors configured logs |
-+------------+-------------+
-             |
-             | Secure communication
-             v
-+--------------------------+
-| Wazuh Server             |
-|                          |
-| Analysis and alerting     |
-+------------+-------------+
-             |
-             v
-+--------------------------+
-| Wazuh Dashboard          |
-|                          |
-| Search, alerts, analysis |
-+--------------------------+
++----------------------------+
+| Poste Linux surveillé      |
+|                            |
+| Journaux système           |
+| Journaux d'authentification|
++-------------+--------------+
+              |
+              | Collecte des journaux
+              v
++----------------------------+
+| Agent Wazuh                |
+|                            |
+| Surveillance des journaux  |
++-------------+--------------+
+              |
+              | Communication sécurisée
+              v
++----------------------------+
+| Serveur Wazuh              |
+|                            |
+| Analyse et alertes         |
++-------------+--------------+
+              |
+              v
++----------------------------+
+| Tableau de bord Wazuh      |
+|                            |
+| Recherche et investigation |
++----------------------------+
 ```
 
-This is the planned logical architecture. The actual deployment, network configuration, and communication settings will be documented after implementation.
+Il s'agit de l'architecture logique prévue. La configuration réelle, les flux réseau et les paramètres de communication seront documentés après l'installation.
 
-## Laboratory Environment
+## 5. Environnement du laboratoire
 
-Initial environment:
+L'environnement initial comprendra :
 
-- A computer running Windows or Linux.
-- A Linux virtual machine for the laboratory.
-- Wazuh server and dashboard.
-- A Wazuh agent installed on the monitored endpoint.
-- A dedicated, isolated laboratory network where appropriate.
+- Un ordinateur sous Windows ou Linux.
+- Une machine virtuelle Linux pour réaliser les tests.
+- Un serveur Wazuh et son tableau de bord.
+- Un agent Wazuh installé sur le poste surveillé.
+- Un environnement de test isolé lorsque cela est nécessaire.
 
-The required CPU, memory, disk space, and supported operating system versions will be determined using the official Wazuh documentation before installation.
+Les ressources matérielles requises, les versions compatibles et les paramètres d'installation seront vérifiés à partir de la documentation officielle de Wazuh avant le déploiement.
 
-## Implementation Roadmap
+## 6. Plan de réalisation
 
-### Phase 1 — Environment Setup
+### Phase 1 — Préparation et installation
 
-- [ ] Review the Wazuh architecture.
-- [ ] Check the host computer's available resources.
-- [ ] Create the laboratory virtual machine.
-- [ ] Install and configure Wazuh using the official documentation.
-- [ ] Verify that the dashboard is accessible.
-- [ ] Document the installation process.
+- [ ] Étudier l'architecture générale de Wazuh.
+- [ ] Vérifier les ressources disponibles sur l'ordinateur.
+- [ ] Préparer la machine virtuelle Linux.
+- [ ] Installer Wazuh en suivant la documentation officielle.
+- [ ] Vérifier l'accès au tableau de bord.
+- [ ] Documenter les commandes et les étapes d'installation.
 
-### Phase 2 — Endpoint Monitoring
+### Phase 2 — Surveillance d'un poste Linux
 
-- [ ] Install and register the Wazuh agent.
-- [ ] Verify agent connectivity.
-- [ ] Identify the authentication logs collected by the endpoint.
-- [ ] Inspect events in the dashboard.
-- [ ] Document the log collection flow.
+- [ ] Installer et enregistrer l'agent Wazuh.
+- [ ] Vérifier la communication entre l'agent et le serveur.
+- [ ] Identifier les journaux d'authentification collectés.
+- [ ] Consulter les événements dans le tableau de bord.
+- [ ] Documenter le cheminement des journaux.
 
-### Phase 3 — Authentication Detection
+### Phase 3 — Détection des échecs d'authentification
 
-- [ ] Establish a baseline of normal authentication activity.
-- [ ] Generate controlled authentication failures in the laboratory.
-- [ ] Identify the corresponding events.
-- [ ] Determine which detection rule generates an alert.
-- [ ] Record the rule identifier, severity, and event details.
-- [ ] Evaluate whether the alert is useful and sufficiently specific.
+- [ ] Observer le fonctionnement normal des authentifications.
+- [ ] Générer des échecs de connexion contrôlés dans le laboratoire.
+- [ ] Identifier les événements correspondants dans les journaux.
+- [ ] Vérifier si une règle de détection génère une alerte.
+- [ ] Relever l'identifiant de la règle, la gravité et les informations utiles.
+- [ ] Évaluer la pertinence de l'alerte.
 
-### Phase 4 — Detection Validation
+### Phase 4 — Validation des détections
 
-- [ ] Define test cases and expected outcomes.
-- [ ] Compare normal and suspicious authentication activity.
-- [ ] Check whether expected alerts are generated.
-- [ ] Investigate missing alerts and unexpected alerts.
-- [ ] Document false positives and detection limitations.
-- [ ] Consider improvements where justified by the tests.
+- [ ] Définir des scénarios de test et les résultats attendus.
+- [ ] Comparer les activités normales et suspectes.
+- [ ] Vérifier si les alertes attendues sont générées.
+- [ ] Analyser les alertes manquantes ou inattendues.
+- [ ] Documenter les faux positifs et les limites de détection.
+- [ ] Proposer des améliorations lorsque les tests les justifient.
 
-### Phase 5 — Incident Investigation
+### Phase 5 — Investigation d'un incident
 
-- [ ] Select a controlled laboratory scenario.
-- [ ] Build a timeline of relevant events.
-- [ ] Identify the affected account and endpoint.
-- [ ] Separate confirmed facts from hypotheses.
-- [ ] Assess the potential impact.
-- [ ] Recommend containment and remediation measures.
-- [ ] Produce an incident report.
+- [ ] Choisir un scénario de sécurité réalisé en laboratoire.
+- [ ] Reconstituer la chronologie des événements.
+- [ ] Identifier les comptes et les systèmes concernés.
+- [ ] Distinguer les faits confirmés des hypothèses.
+- [ ] Évaluer les conséquences potentielles.
+- [ ] Proposer des mesures de confinement et de correction.
+- [ ] Rédiger un rapport d'incident.
 
-### Phase 6 — Documentation and Review
+### Phase 6 — Documentation et amélioration
 
-- [ ] Complete the architecture documentation.
-- [ ] Add sanitized screenshots.
-- [ ] Document the commands and configuration required to reproduce the lab.
-- [ ] Explain the technical decisions.
-- [ ] Record known limitations.
-- [ ] Define future improvements.
+- [ ] Finaliser la documentation de l'architecture.
+- [ ] Ajouter des captures d'écran expurgées des données sensibles.
+- [ ] Documenter les procédures permettant de reproduire les tests.
+- [ ] Expliquer les choix techniques.
+- [ ] Présenter les limites connues.
+- [ ] Définir les prochaines améliorations.
 
-## Detection Scenario: Repeated Authentication Failures
+## 7. Scénario de détection : échecs d'authentification répétés
 
-### Objective
+### Objectif
 
-Investigate repeated failed authentication attempts on a monitored Linux endpoint.
+Étudier des tentatives répétées de connexion échouées sur un poste Linux surveillé.
 
-### Scenario
+### Scénario
 
-A user account receives multiple failed login attempts within a short period.
+Un compte utilisateur reçoit plusieurs échecs d'authentification sur une courte période.
 
-The activity could result from a mistyped password, a misconfigured service, or a suspicious attempt to gain access.
+Cette activité peut être liée à une erreur de saisie, à un service mal configuré ou à une tentative suspecte d'accès au système.
 
-Repeated failures alone do not prove that an attack has occurred.
+Des échecs répétés ne suffisent pas, à eux seuls, à prouver qu'une attaque a eu lieu.
 
-### Investigation Procedure
+### Méthode d'investigation
 
-1. Identify the relevant authentication events.
-2. Check timestamps, account names, source information when available, and event outcomes.
-3. Correlate the events with Wazuh alerts.
-4. Review the detection rule and its conditions.
-5. Determine whether the activity can be explained by legitimate behavior.
-6. Document the evidence and remaining uncertainty.
-7. Recommend proportionate next steps.
+1. Identifier les événements d'authentification pertinents.
+2. Examiner les horodatages, les comptes concernés, les sources disponibles et les résultats des tentatives.
+3. Rechercher les alertes Wazuh associées.
+4. Étudier les règles de détection et leurs conditions de déclenchement.
+5. Vérifier si l'activité peut être expliquée par un comportement légitime.
+6. Documenter les preuves et les incertitudes restantes.
+7. Proposer des actions adaptées à la situation observée.
 
-### Expected Evidence
+### Résultats attendus
 
-The investigation should aim to produce:
+L'investigation devra permettre de produire :
 
-- Relevant event samples.
-- The associated alert and rule information.
-- A short event timeline.
-- An assessment of the evidence.
-- A record of detection limitations.
-- A proposed response plan.
+- Des exemples de journaux pertinents.
+- Les informations relatives aux alertes et aux règles concernées.
+- Une chronologie des événements.
+- Une évaluation argumentée des éléments observés.
+- Une analyse des limites de détection.
+- Un plan d'action proposé.
 
-Results will be added after the scenario has been executed and validated.
+Les résultats réels seront ajoutés après l'exécution et la validation du scénario.
 
-## Incident Report Template
+## 8. Modèle de rapport d'incident
 
-Each investigated scenario should include the following sections:
+Chaque investigation devra comporter les sections suivantes :
 
-1. **Incident summary:** What was observed?
-2. **Scope:** Which systems and accounts were involved?
-3. **Timeline:** What happened, and when?
-4. **Evidence:** Which logs and alerts support the findings?
-5. **Assessment:** What is confirmed, suspected, or unknown?
-6. **Impact:** What could be affected?
-7. **Response:** Which containment or remediation actions are recommended?
-8. **Lessons learned:** What could be improved?
-9. **Detection improvements:** How could monitoring be made more effective?
+1. **Résumé de l'incident :** que s'est-il passé ?
+2. **Périmètre :** quels systèmes et comptes sont concernés ?
+3. **Chronologie :** quels événements se sont produits et à quel moment ?
+4. **Éléments de preuve :** quels journaux et alertes soutiennent l'analyse ?
+5. **Évaluation :** quels faits sont confirmés, suspectés ou inconnus ?
+6. **Impact potentiel :** quelles ressources pourraient être affectées ?
+7. **Réponse :** quelles mesures de confinement et de correction sont recommandées ?
+8. **Retour d'expérience :** que pourrait-on améliorer ?
+9. **Amélioration de la détection :** comment rendre la surveillance plus efficace ?
 
-## Security and Ethical Scope
-
-All tests must remain within systems I own or have explicit permission to test.
-
-- No unauthorized access attempts.
-- No testing against public systems or third-party infrastructure.
-- No real credentials, secrets, or personal data in the repository.
-- No publication of private IP details, tokens, or sensitive screenshots.
-- Use synthetic events when real logs are unnecessary.
-- Document the scope and authorization of laboratory activities.
-
-## Repository Structure
+## 9. Organisation du dépôt
 
 ```text
 soc-home-lab-wazuh/
@@ -228,54 +219,67 @@ soc-home-lab-wazuh/
     └── README.md
 ```
 
-Only files that are relevant and safe to publish will be added. Empty directories can be created as the corresponding phases begin.
+Les fichiers seront ajoutés progressivement, au fur et à mesure de la réalisation des différentes phases. Les configurations publiées seront expurgées de toute information sensible.
 
-## Learning Outcomes
+## 10. Sécurité et cadre des tests
 
-By completing this project, I aim to develop practical skills in:
+Toutes les manipulations seront réalisées dans un environnement personnel ou sur des systèmes pour lesquels une autorisation explicite a été obtenue.
 
-- Linux system administration.
-- Security event collection and interpretation.
-- SIEM concepts and alert investigation.
-- Authentication monitoring.
-- Detection validation and false-positive analysis.
-- Incident documentation.
-- Technical communication.
-- Reproducible laboratory setup.
+- Aucun accès non autorisé à des systèmes tiers.
+- Aucun test contre des infrastructures publiques sans autorisation.
+- Aucun mot de passe réel, jeton secret ou donnée personnelle dans le dépôt.
+- Aucune capture d'écran contenant des informations sensibles.
+- Utilisation d'événements synthétiques lorsque les journaux réels ne sont pas nécessaires.
+- Documentation du périmètre et des autorisations des tests.
 
-## Limitations
+## 11. Compétences visées
 
-This is a personal laboratory and not a production SOC.
+Ce projet doit permettre de développer progressivement les compétences suivantes :
 
-Its results will depend on the monitored systems, enabled log sources, configuration, detection rules, and test scenarios.
+- Administration de systèmes Linux.
+- Compréhension et analyse des événements de sécurité.
+- Utilisation des concepts SIEM.
+- Surveillance des authentifications.
+- Investigation et qualification des alertes.
+- Validation des mécanismes de détection.
+- Analyse des faux positifs.
+- Documentation technique.
+- Rédaction de rapports d'incident.
+- Communication et justification des décisions techniques.
 
-A successful test does not demonstrate that all attacks can be detected. Detection coverage and false-positive behavior must be evaluated within a defined scope.
+## 12. Limites du projet
 
-## Future Improvements
+Ce laboratoire personnel ne constitue pas un SOC de production.
 
-Possible extensions include:
+Les résultats dépendent des systèmes surveillés, des sources de journaux activées, de la configuration, des règles de détection et des scénarios testés.
 
-- Monitoring a Windows endpoint.
-- Creating and validating custom Wazuh detection rules.
-- Adding Sigma rules and explaining their compatibility or conversion where applicable.
-- Mapping relevant detections to MITRE ATT&CK.
-- Automating repeatable tests with Python.
-- Developing additional incident scenarios.
-- Comparing detection behavior across different log sources.
+La réussite d'un test ne prouve pas que toutes les attaques seront détectées. La couverture de détection et les faux positifs devront être évalués dans un périmètre défini.
 
-Extensions will be prioritized according to their learning value and the time available.
+## 13. Améliorations futures
 
-## References
+Les évolutions possibles comprennent :
 
-- [Wazuh Documentation](https://documentation.wazuh.com/current/)
-- [Wazuh Getting Started](https://documentation.wazuh.com/current/getting-started/)
-- [Sigma Specification](https://github.com/SigmaHQ/sigma-specification)
+- La surveillance d'un poste Windows.
+- La création et la validation de règles Wazuh personnalisées.
+- L'ajout de règles Sigma et l'étude de leur compatibilité.
+- La correspondance des détections avec MITRE ATT&CK.
+- L'automatisation de tests reproductibles avec Python.
+- L'ajout de nouveaux scénarios d'incident.
+- La comparaison des résultats selon les sources de journaux.
+
+Ces évolutions seront priorisées selon leur intérêt pédagogique et le temps disponible.
+
+## 14. Références
+
+- [Documentation officielle de Wazuh](https://documentation.wazuh.com/current/)
+- [Guide de démarrage Wazuh](https://documentation.wazuh.com/current/getting-started/)
+- [Spécification Sigma](https://github.com/SigmaHQ/sigma-specification)
 - [MITRE ATT&CK](https://attack.mitre.org/)
 
 ---
 
-**Author:** Your GitHub username
+**Auteur :** Devnew14
 
-**Project type:** Cybersecurity home lab / Blue Team
+**Type de projet :** laboratoire personnel de cybersécurité défensive (Blue Team)
 
-**Status:** In progress
+**Statut :** en cours de réalisation
