@@ -86,4 +86,3 @@ Cette première démonstration m'a permis de vérifier que Wazuh remontait des �
 
 Je souhaite maintenant poursuivre les tests pour mieux comprendre la détection des tentatives répétées et apprendre à analyser ces situations comme le ferait un analyste SOC.
 
-**Périmètre du test :** laboratoire personnel, sur une machine Ubuntu locale. Aucune tentative d'intrusion contre un système tiers n'a été réalisée.
