@@ -2,75 +2,88 @@
 
 ## 1. Objectif
 
-Pour ce test, je voulais vérifier que Wazuh était capable de détecter une tentative de connexion SSH échouée et de générer une alerte exploitable pour un analyste SOC.
+Pour cette première démonstration, je voulais vérifier que Wazuh était capable de détecter une tentative de connexion SSH échouée et de faire remonter les événements correspondants dans son tableau de bord.
+
+J'ai choisi ce scénario parce que les échecs de connexion font partie des événements qu'un analyste SOC doit savoir repérer et analyser.
 
 ## 2. Environnement utilisé
 
-Le test a été réalisé dans mon laboratoire de cybersécurité avec les éléments suivants :
+J'ai réalisé ce test dans mon laboratoire de cybersécurité avec les éléments suivants :
 
-- **Système :** Ubuntu
+- **Système :** Ubuntu Linux
 - **SIEM :** Wazuh
-- **Service surveillé :** OpenSSH
+- **Service testé :** OpenSSH
 - **Utilisateur testé :** `utilisateur_test_inexistant`
-- **Adresse source observée :** `127.0.0.1`
+- **Adresse source :** `127.0.0.1`
 
-L'objectif était de générer un événement contrôlé, puis de vérifier comment il était enregistré et détecté.
+Le but était de provoquer volontairement un échec de connexion, puis de vérifier si cet événement apparaissait dans les journaux système et dans Wazuh.
 
 ## 3. Déroulement du test
 
-J'ai lancé une tentative de connexion SSH en utilisant volontairement un nom d'utilisateur qui n'existe pas sur le système.
+J'ai lancé une tentative de connexion SSH vers ma propre machine Ubuntu en utilisant un nom d'utilisateur inexistant.
 
-La connexion a échoué, comme prévu. J'ai ensuite consulté les journaux SSH d'Ubuntu, puis les alertes remontées par Wazuh pour vérifier que l'événement avait bien été détecté.
+Comme prévu, la connexion a échoué. J'ai ensuite consulté les journaux SSH avec `journalctl` pour vérifier que le système avait bien enregistré la tentative.
+
+Enfin, j'ai ouvert le tableau de bord Wazuh, dans la section **Threat Hunting**, afin de rechercher les événements correspondants et d'examiner les alertes générées.
 
 ## 4. Résultats obtenus
 
-L'analyse des alertes a permis d'identifier deux règles pertinentes :
+Pendant l'analyse, j'ai identifié deux règles Wazuh intéressantes :
 
 - **Règle 5710 — Niveau 5 :** tentative de connexion avec un utilisateur inexistant.
-- **Règle 5503 — Niveau 5 :** échec d'authentification détecté par PAM.
+- **Règle 5503 — Niveau 5 :** échec de connexion détecté par PAM.
 
-Ces deux alertes correspondent au type d'événement généré pendant le test. Le niveau 5 indique la classification attribuée par Wazuh ; il ne suffit pas, à lui seul, à confirmer une attaque.
+Ces deux règles permettent de comprendre pourquoi la tentative a échoué et comment Wazuh interprète les événements remontés par le système.
 
-## 5. Capture 1 — Vue générale de Wazuh
+Le niveau 5 correspond à la gravité attribuée par Wazuh à ces alertes. Il ne signifie pas automatiquement qu'une attaque est en cours.
 
-La première capture présente le tableau de bord général. Sur la période sélectionnée, il affiche 468 événements au total et 6 échecs d'authentification.
+## 5. Capture 1 — Vue générale du tableau de bord
 
-Cette vue permet d'avoir un aperçu de l'activité surveillée. Ces chiffres correspondent aux données affichées dans le tableau de bord et ne représentent pas nécessairement des attaques.
+La première capture montre la vue générale de mon tableau de bord Wazuh. Pour la période sélectionnée, on peut voir 468 événements au total, dont 6 échecs d'authentification.
+
+Cette vue me permet d'avoir un aperçu de l'activité surveillée par le laboratoire. Il faut toutefois distinguer le nombre d'événements affichés du nombre d'attaques : ces chiffres ne signifient pas que toutes ces activités sont malveillantes.
 
 ![Vue générale du tableau de bord Wazuh](../screenshots/test1wazuh.png)
 
-## 6. Capture 2 — Résultats du test
+## 6. Capture 2 — Vue filtrée des événements SSH
 
-La deuxième capture montre une vue filtrée affichant 2 événements au total et 2 échecs d'authentification.
+La deuxième capture présente une vue filtrée affichant 2 événements au total et 2 échecs d'authentification.
 
-J'ai ensuite examiné les alertes correspondantes, notamment les règles 5710 et 5503, afin de comprendre pourquoi elles avaient été déclenchées.
+J'ai utilisé cette vue pour examiner plus précisément les événements liés aux échecs de connexion. Les règles 5710 et 5503 sont particulièrement utiles pour comprendre ce que Wazuh a détecté.
+
+Les chiffres présentés correspondent à la vue filtrée au moment de la capture ; ils ne représentent pas nécessairement l'ensemble des événements du laboratoire.
 
 ![Vue filtrée du test SSH](../screenshots/test2Wazuh.png)
 
-## 7. Analyse et interprétation
+## 7. Ce que je retiens de ce test
 
-Ce test m'a permis de suivre plusieurs étapes importantes d'une investigation SOC :
+Ce premier exercice m'a permis de mieux comprendre comment se déroule une analyse SOC, depuis la génération d'un événement jusqu'à son interprétation dans un SIEM.
 
-1. Générer un événement de sécurité dans un environnement contrôlé.
-2. Vérifier sa présence dans les journaux système.
-3. Examiner les alertes produites par Wazuh.
-4. Comprendre les règles déclenchées et les informations qu'elles fournissent.
-5. Identifier les limites du test et les vérifications à réaliser pour approfondir l'analyse.
+J'ai notamment appris à :
 
-Un point important concerne l'adresse `127.0.0.1`, qui correspond à la boucle locale. Le test valide donc la détection d'un événement local, mais ne démontre pas encore la détection d'une tentative provenant d'une machine distante.
+- Provoquer un événement de sécurité dans un environnement contrôlé.
+- Vérifier les traces laissées dans les journaux système.
+- Rechercher les événements correspondants dans Wazuh.
+- Examiner les règles déclenchées et leur niveau de gravité.
+- Distinguer un événement suspect d'une attaque réellement confirmée.
+
+Un point important est que l'adresse `127.0.0.1` correspond à la boucle locale. La tentative a donc été réalisée depuis la machine elle-même. Ce test permet de vérifier la détection d'un événement local, mais ne démontre pas encore la détection d'une tentative provenant d'une machine distante.
 
 ## 8. Améliorations envisagées
 
-Pour approfondir ce laboratoire, je souhaite notamment :
+Pour aller plus loin, je souhaite maintenant :
 
-- Réaliser plusieurs tentatives de connexion échouées dans un environnement contrôlé.
-- Étudier la détection de tentatives répétées et les règles associées.
-- Examiner les faux positifs et les possibilités d'amélioration des alertes.
-- Tester la collecte d'événements provenant d'une autre machine de laboratoire.
-- Rédiger un compte rendu d'investigation avec les observations, les éléments de preuve et les recommandations.
+- Réaliser plusieurs tentatives de connexion échouées dans mon laboratoire.
+- Observer comment les événements évoluent lorsque les tentatives se répètent.
+- Étudier les règles permettant de détecter une éventuelle tentative de force brute.
+- Examiner les faux positifs et les moyens d'améliorer la pertinence des alertes.
+- Tester la collecte d'événements provenant d'une deuxième machine virtuelle.
+- Rédiger des comptes rendus d'investigation avec les observations, les preuves et les recommandations.
 
 ## 9. Conclusion
 
-Ce premier test m'a permis de vérifier le fonctionnement de la détection d'échecs de connexion SSH avec Wazuh. J'ai pu examiner les journaux système, retrouver les alertes correspondantes et commencer à interpréter les résultats dans une démarche d'analyse SOC.
+Cette première démonstration m'a permis de vérifier que Wazuh remontait des événements liés à un échec de connexion SSH et de commencer à analyser les alertes correspondantes.
 
-La prochaine étape sera d'approfondir les tests afin de mieux comprendre la détection de comportements répétés et la manière dont un analyste SOC qualifie un événement suspect.
+Je souhaite maintenant poursuivre les tests pour mieux comprendre la détection des tentatives répétées et apprendre à analyser ces situations comme le ferait un analyste SOC.
+
+**Périmètre du test :** laboratoire personnel, sur une machine Ubuntu locale. Aucune tentative d'intrusion contre un système tiers n'a été réalisée.
